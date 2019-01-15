@@ -10,6 +10,7 @@ urlpatterns = [
     path('TwitterDataView/', ListTwitterDataView.as_view()),
     path('', ListTwitterDataView.as_view()),
     url(r'^timeline/$', views.timeline, name='timeline'),
+    # url(r'^tweets/$', views.timeline, name='tweets'),
     # path('ListTweetsView', ListTweetsView.as_view()),
     # path('', ListTweetsView.as_view()),
     # url(r'^tweets/$', views.tweets, name='tweets'),

@@ -1,5 +1,7 @@
 from rest_framework import generics
 from django.http import JsonResponse
+import json
+from rest_framework.response import Response
 
 from django.shortcuts import render_to_response
 
@@ -9,6 +11,8 @@ from .serializers import TwitterparseSerializer
 # from .serializers import TweetparseSerializer
 
 from twitter_auth.utils import *
+import tweepy
+from tweepy.auth import OAuthHandler
 
 
 
@@ -35,15 +39,24 @@ def timeline(request):
     twitter_user = 'katjamfitz'
     # twitter_user = request['twitter_user']
     api = get_api(request)
-    timeline = api.user_timeline(twitter_user)
+    timeline = api.user_timeline(twitter_user, count=10)
+    new_timeline = {"tweets":timeline}
+
+    # import pdb; pdb.set_trace();
+
     # print(timeline)
     # print(timeline[0]._json)
     # return render_to_response('timeline.html', {'timeline' : timeline})
     # return render_to_response('timeline.html', {'timeline' : timeline})
+
+    # return timeline
+    # print(timeline)
     return JsonResponse(timeline[0]._json)
-import tweepy
-from tweepy.auth import OAuthHandler
+    # return render_to_response('timeline.html', {'timeline' : timeline})
+
 # from .models import Tweet
+
+
 
 
 def user_tweets():
@@ -51,7 +64,7 @@ def user_tweets():
     auth.set_access_token('OAuth Access Token', 'OAuth Access Token Secret')
     api = tweepy.API(auth)
     user_tweets = api.user_timeline(count=50)
-    return user_tweets
+    return JsonResponse(user_tweets[0]._json)
 
 def save_to_db():
     original_tweets = user_tweets()
