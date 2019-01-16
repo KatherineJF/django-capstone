@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'twitterparse',
     'twitter_auth',
+    'botometer_python'
 
 
 ]
