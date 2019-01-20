@@ -15,6 +15,7 @@ from .serializers import TwitterparseSerializer
 from twitter_auth.utils import *
 import tweepy
 from tweepy.auth import OAuthHandler
+import pprint
 
 import pdb
 
@@ -46,6 +47,22 @@ def timeline(request):
     # twitter_user = request['twitter_user']
     api = get_api(request)
     timeline = api.user_timeline(twitter_user, count=10)
+    # profile_image_url_https =.profile_image_url_https()
+
+    status_list = []
+    for raw_status in timeline:
+        print(raw_status)
+        print("\n\n\n\n\n\n\n")
+        status = {
+            'id': raw_status.id,
+            'text': raw_status.text,
+            'profile_url': raw_status.user.profile_image_url_https
+        }
+        status_list.append(status)
+    return JsonResponse(status_list, safe=False)
+    # return render_to_response('timeline.html', {'timeline' : timeline})
+
+
     #pdb.set_trace()
 
 
@@ -58,28 +75,23 @@ def timeline(request):
 
     # return timeline
     # print(timeline)
-    status_list = []
-    for raw_status in timeline:
-        status = {
-            'id': raw_status.id,
-            'text': raw_status.text
-        }
-        status_list.append(status)
-    return JsonResponse(status_list, safe=False)
-    # return render_to_response('timeline.html', {'timeline' : timeline})
-
 def check_account(request):
     CONSUMER_KEY = 'fdeOJrxMU7xE1KuflEQudxAg8'
     CONSUMER_SECRET = 'lGgJXT5sqGPEVPA4cvxZGuJk3HKPARZCsveptj1ihvbXE1YwT4'
     MASHAPE_KEY = 'JhMriAY1cBmshVq8nl7gPICau0ybp1CBgByjsniK45FLVHNZH2'
 
     twitter_user = '@' + request.GET.get('twitter_user', '')
+    count = request.GET.get('count', 10)
+    api = get_api(request)
+
     botometer = Botometer(consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET, mashape_key=MASHAPE_KEY)
     result = botometer.check_account(user=twitter_user);
     bot_result = {
         'screen_name': twitter_user,
-        'bot_score': result['display_scores']['english']
+        'bot_score': result['display_scores']['english'],
+        'profile_url': result['user']['profile_url']
     }
+    print(result)
 
     return JsonResponse(bot_result, safe=False)
 
@@ -94,16 +106,20 @@ def check_account_in(request):
     api = get_api(request)
 
     accounts = []
-    for follower in api.followers(twitter_user, count=count):
-        accounts.append('@' + follower._json['screen_name'])
+    for friend in api.friends(twitter_user, count=count):
+        accounts.append('@' + friend._json['screen_name'])
 
     botometer = Botometer(consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET, mashape_key=MASHAPE_KEY)
     bot_results = []
     for screen_name, result in botometer.check_accounts_in(accounts=accounts):
         bot_results.append({
             'screen_name': screen_name,
-            'bot_score': result['display_scores']['english']
+            'bot_score': result['display_scores']['english'],
+            'profile_url': result['user']['profile_url']
+
         })
+        print(result)
+        print("\n\n\n\n\n\n\n\n\n\n")
     return JsonResponse(bot_results, safe=False)
 
 
