@@ -1,6 +1,7 @@
 from rest_framework import generics
 from django.http import JsonResponse
 import json
+
 from rest_framework.response import Response
 # from botometer import botometer.__init__
 from botometer_python.botometer import *
@@ -18,6 +19,11 @@ from tweepy.auth import OAuthHandler
 import pprint
 
 import pdb
+import environ
+
+#
+env = environ.Env(DEBUG=(bool, False)) # set default values and casting
+env.read_env()
 
 # class TimeLineStatus():
 #
@@ -57,6 +63,7 @@ def timeline(request):
             'id': raw_status.id,
             'text': raw_status.text,
             'profile_url': raw_status.user.profile_image_url_https
+
         }
         status_list.append(status)
     return JsonResponse(status_list, safe=False)
@@ -76,9 +83,9 @@ def timeline(request):
     # return timeline
     # print(timeline)
 def check_account(request):
-    CONSUMER_KEY = 'fdeOJrxMU7xE1KuflEQudxAg8'
-    CONSUMER_SECRET = 'lGgJXT5sqGPEVPA4cvxZGuJk3HKPARZCsveptj1ihvbXE1YwT4'
-    MASHAPE_KEY = 'JhMriAY1cBmshVq8nl7gPICau0ybp1CBgByjsniK45FLVHNZH2'
+    CONSUMER_KEY = env('CONSUMER_KEY')
+    CONSUMER_SECRET = env('CONSUMER_SECRET')
+    MASHAPE_KEY = env('MASHAPE_KEY')
 
     twitter_user = '@' + request.GET.get('twitter_user', '')
     count = request.GET.get('count', 10)

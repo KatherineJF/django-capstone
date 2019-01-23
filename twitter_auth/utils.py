@@ -1,7 +1,12 @@
 import tweepy
+import environ
 
-CONSUMER_KEY = 'fdeOJrxMU7xE1KuflEQudxAg8'
-CONSUMER_SECRET = 'lGgJXT5sqGPEVPA4cvxZGuJk3HKPARZCsveptj1ihvbXE1YwT4'
+#
+env = environ.Env(DEBUG=(bool, False)) # set default values and casting
+env.read_env()
+# #
+CONSUMER_KEY = env('CONSUMER_KEY')
+CONSUMER_SECRET = env('CONSUMER_SECRET') 
 
 def get_api(request):
 	# set up and return a twitter api object

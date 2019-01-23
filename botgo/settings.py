@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import environ
 import os
 
+env = environ.Env(DEBUG=(bool, False),) # set default values and casting
+environ.Env.read_env() # reading .env file
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '4ixjrk-^bj^ear00yce_p9=jhi!4p*b52e4xr4kt_gdayrhh!z'
+SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = '4ixjrk-^bj^ear00yce_p9=jhi!4p*b52e4xr4kt_gdayrhh!z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
